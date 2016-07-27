@@ -1,6 +1,7 @@
 package com.annaniks.gameServee;
 
 import com.annaniks.gameServee.model.MongoConnector;
+import com.annaniks.gameServee.setting.Settings;
 import com.annaniks.gameServee.utils.Utils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -8,10 +9,11 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONException;
+
 import static com.mongodb.client.model.Filters.*;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +23,23 @@ import java.io.IOException;
 /**
  * Created by root on 2/10/16.
  */
-@WebServlet(value = "/update", name = "Update")
-public class Update extends HttpServlet {
+@WebServlet(value = "/updateLevel", name = "UpdateLevel")
+public class UpdateLevel extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = Utils.getIDFromRequest(request, response);
         assert (id != null);
-        String doc = Utils.getDoc(request, response);
-        System.out.println("doc = " + doc);
+        String doc = null;
+        try {
+            doc = Utils.getParam(request, response, "doc");
+        } catch (JSONException e) {
+            if(Settings.DEBUG) {
+                System.err.println("from POST" + e.toString());
+                e.printStackTrace();
+            }
+        }
+        if(Settings.DEBUG) {
+            System.out.println("doc from POST = " + doc);
+        }
         assert (doc != null);
         updateDoc(id, doc);
     }
@@ -35,8 +47,18 @@ public class Update extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = Utils.getIDFromRequest(request, response);
         assert (id != null);
-        String doc = Utils.getDoc(request, response);
-        System.out.println("doc = " + doc);
+        String doc = null;
+        try {
+            doc = Utils.getParam(request, response, "doc");
+        } catch (JSONException e) {
+            if(Settings.DEBUG) {
+                System.err.println("from GET " + e.toString());
+                e.printStackTrace();
+            }
+        }
+        if(Settings.DEBUG) {
+            System.out.println("doc from GET = " + doc);
+        }
         assert (doc != null);
         updateDoc(id, doc);
     }

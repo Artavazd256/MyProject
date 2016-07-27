@@ -1,5 +1,6 @@
 package com.annaniks.gameServee.utils;
 
+import com.annaniks.gameServee.protocule.ProtocolsOutput;
 import com.annaniks.gameServee.setting.Settings;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -7,6 +8,7 @@ import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONException;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -31,15 +33,15 @@ public class Utils {
         return id;
     }
 
-    public static String getDoc(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String doc = request.getParameter("doc");
-        if ("".equals(doc) || doc == null) {
+    public static String getParam(HttpServletRequest request, HttpServletResponse response, String key) throws IOException, JSONException {
+        String data = request.getParameter("doc");
+        if ("".equals(data) || data == null) {
             ServletOutputStream outputStream = response.getOutputStream();
-            outputStream.write("The doc key is not defined".getBytes());
+            outputStream.write(ProtocolsOutput.errorCode(3, String.format("The %s key is not defined", key)).getBytes());
             outputStream.flush();
             outputStream.close();
         }
-        return doc;
+        return data;
     }
 
     public static Document getUserDocument(String uid) {

@@ -23,4 +23,21 @@ public class ProtocolsOutput {
         result.put("statis", data);
         return result.toString();
     }
+
+    public static String errorCode(int errorCode, String msg) throws JSONException {
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        data.put("error", String.valueOf(errorCode));
+        data.put("msg", msg);
+        result.put("statis", data);
+        return result.toString();
+    }
+
+    public static String statusOk(String actionName) throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put(actionName, "ok");
+        return result.toString();
+    }
+
+
 }

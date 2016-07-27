@@ -2,7 +2,7 @@
     "_id": "45825A452F7528844ACD",
     "uid":"45147564476244",
     "xp":"458"
-    "currentLevelsXP" : [ 
+    "currentLevelsXP":[
                             {"level":"1", "xp":"100", "stare":"3"}, 
                             {"level":"2", "xp":"200", "stare":"2"}, 
                             {"level":"3", "xp":"300", "stare":"1"}, 
@@ -20,4 +20,4 @@
     "friendsEventsUIDS" { "date": "1466787975"
                          "uids" ["56251452", "8127428248"]
                        },
-}
+};

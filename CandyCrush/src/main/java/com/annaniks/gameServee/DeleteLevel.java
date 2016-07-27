@@ -1,6 +1,8 @@
 package com.annaniks.gameServee;
 
 import com.annaniks.gameServee.model.MongoConnector;
+import com.annaniks.gameServee.protocule.ProtocolsOutput;
+import com.annaniks.gameServee.setting.Settings;
 import com.annaniks.gameServee.utils.Utils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -9,6 +11,7 @@ import com.mongodb.client.MongoDatabase;
 import jdk.nashorn.internal.runtime.regexp.RegExp;
 import org.bson.Document;
 import org.bson.types.ObjectId;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -22,20 +25,34 @@ import java.io.IOException;
 /**
  * Created by root on 2/10/16.
  */
-@WebServlet(value = "/delete", name = "Delete")
-public class Delete extends HttpServlet {
+@WebServlet(value = "/deleteLevel", name = "DeleteLevel")
+public class DeleteLevel extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = Utils.getIDFromRequest(request, response);
-        deleteLevel(id, response);
+        try {
+            deleteLevel(id, response);
+        } catch (JSONException e) {
+            if(Settings.DEBUG) {
+                System.err.println("from POST " + e.toString());
+                e.printStackTrace();
+            }
+        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = Utils.getIDFromRequest(request, response);
-        deleteLevel(id, response);
+        try {
+            deleteLevel(id, response);
+        } catch (JSONException e) {
+            if(Settings.DEBUG) {
+                System.err.println("from GET" + e.toString());
+                e.printStackTrace();
+            }
+        }
 
     }
 
-    private void deleteLevel(String id, HttpServletResponse response) throws IOException {
+    private void deleteLevel(String id, HttpServletResponse response) throws IOException, JSONException {
         if (ObjectId.isValid(id)) {
             MongoClient mongoClient = MongoConnector.getMongoClient();
             MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, "MyGame");
@@ -44,7 +61,7 @@ public class Delete extends HttpServlet {
             query.put("_id", new ObjectId(id));
             levels.deleteOne(query);
             ServletOutputStream outputStream = response.getOutputStream();
-            outputStream.write(String.format("{\"deleted\":\"ok\"}").getBytes());
+            outputStream.write(ProtocolsOutput.statusOk("deleted").getBytes());
             outputStream.flush();
             outputStream.close();
         } else {

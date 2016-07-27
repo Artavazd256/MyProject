@@ -52,7 +52,7 @@ public class Login extends HttpServlet {
     private void handler(HttpServletRequest request, HttpServletResponse response) throws JSONException {
         String uid = request.getParameter("uid");
         if(Utils.isNull(uid)) {
-            Utils.sendMessage(response, "The protocol is incorrect");
+            Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.PROTOCOL_ERROR));
             return;
         }
         if(!UtilsMongo.isUserExists(uid, collection)) {
