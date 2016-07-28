@@ -6,9 +6,11 @@ import com.annaniks.gameServee.protocule.ProtocolsOutput;
 import com.annaniks.gameServee.setting.Settings;
 import com.annaniks.gameServee.utils.Utils;
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.json.JSONException;
 
 import javax.servlet.ServletException;
@@ -17,6 +19,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  * Created by artavzd on 7/20/16.
@@ -55,7 +59,9 @@ public class UserInfo extends HttpServlet {
         String uid = request.getParameter("uid");
         if (!Utils.isNull(uid)) {
             if(UtilsMongo.isUserExists(uid, collection)) {
-
+                FindIterable<Document> doc = collection.find(eq("uid", uid)).limit(1);
+                Document first = doc.first();
+                Utils.sendMessage(response, first.toJson());
             } else {
                Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.ERROR_CODE_USER_NOT_EXISTS));
             }
