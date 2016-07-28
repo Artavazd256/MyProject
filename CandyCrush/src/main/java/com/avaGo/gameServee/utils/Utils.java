@@ -1,11 +1,7 @@
-package com.annaniks.gameServee.utils;
+package com.avaGo.gameServee.utils;
 
-import com.annaniks.gameServee.protocule.ProtocolsOutput;
-import com.annaniks.gameServee.setting.Settings;
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.BasicDBObjectBuilder;
-import com.mongodb.DBObject;
+import com.avaGo.gameServee.protocule.ProtocolsOutput;
+import com.avaGo.gameServee.setting.Settings;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONException;
@@ -14,8 +10,6 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by root on 2/17/16.

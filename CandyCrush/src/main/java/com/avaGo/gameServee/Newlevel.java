@@ -1,13 +1,11 @@
-package com.annaniks.gameServee;
+package com.avaGo.gameServee;
 
-import com.annaniks.gameServee.model.MongoConnector;
+import com.avaGo.gameServee.model.MongoConnector;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.bson.BasicBSONObject;
 import org.bson.Document;
-import org.json.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;

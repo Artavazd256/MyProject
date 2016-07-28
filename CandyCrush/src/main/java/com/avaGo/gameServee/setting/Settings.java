@@ -1,4 +1,4 @@
-package com.annaniks.gameServee.setting;
+package com.avaGo.gameServee.setting;
 
 /**
  * Created by artavzd on 7/14/16.

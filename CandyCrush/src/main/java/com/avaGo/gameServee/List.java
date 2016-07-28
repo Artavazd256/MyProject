@@ -1,8 +1,7 @@
-package com.annaniks.gameServee;
+package com.avaGo.gameServee;
 
-import com.annaniks.gameServee.model.MongoConnector;
+import com.avaGo.gameServee.model.MongoConnector;
 import com.mongodb.MongoClient;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;

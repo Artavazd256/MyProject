@@ -1,4 +1,4 @@
-package com.annaniks.gameServee.protocule;
+package com.avaGo.gameServee.protocule;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,10 +1,10 @@
-package com.annaniks.gameServee;
+package com.avaGo.gameServee;
 
-import com.annaniks.gameServee.model.MongoConnector;
-import com.annaniks.gameServee.model.UtilsMongo;
-import com.annaniks.gameServee.protocule.ProtocolsOutput;
-import com.annaniks.gameServee.setting.Settings;
-import com.annaniks.gameServee.utils.Utils;
+import com.avaGo.gameServee.model.MongoConnector;
+import com.avaGo.gameServee.model.UtilsMongo;
+import com.avaGo.gameServee.protocule.ProtocolsOutput;
+import com.avaGo.gameServee.setting.Settings;
+import com.avaGo.gameServee.utils.Utils;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;

@@ -1,4 +1,4 @@
-package com.annaniks.gameServee.model;
+package com.avaGo.gameServee.model;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;

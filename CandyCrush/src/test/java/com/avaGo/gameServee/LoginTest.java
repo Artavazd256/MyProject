@@ -1,4 +1,4 @@
-package com.annaniks.gameServee;
+package com.avaGo.gameServee;
 
 import org.junit.Test;
 
