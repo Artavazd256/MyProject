@@ -4,6 +4,8 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 
+import static com.mongodb.client.model.Filters.eq;
+
 /**
  * Created by artavzd on 7/20/16.
  */
@@ -18,4 +20,11 @@ public class UtilsMongo {
         }
         return false;
     }
+
+    public static Document getUserByUID(String uid, MongoCollection<Document> collection ) {
+        assert (uid != null);
+        Document first = collection.find(eq("uid", uid)).first();
+        return first;
+    }
+
 }
