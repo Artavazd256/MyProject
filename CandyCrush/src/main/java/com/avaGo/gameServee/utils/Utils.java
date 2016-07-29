@@ -2,6 +2,7 @@ package com.avaGo.gameServee.utils;
 
 import com.avaGo.gameServee.protocule.ProtocolsOutput;
 import com.avaGo.gameServee.setting.Settings;
+import com.mongodb.BasicDBList;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONException;
@@ -39,8 +40,8 @@ public class Utils {
     }
 
     public static Document getUserDocument(String uid) {
-        Document currentLevelsXP = new Document();
-        Document  friendsEventsUIDS = new Document();
+        BasicDBList currentLevelsXP = new BasicDBList();
+        BasicDBList friendsEventsUIDS = new BasicDBList();
         Document user = new Document();
         user.put("uid", uid);
         user.put("xp", 0);

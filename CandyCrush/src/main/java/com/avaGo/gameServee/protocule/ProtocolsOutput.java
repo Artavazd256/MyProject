@@ -27,9 +27,9 @@ public class ProtocolsOutput {
     public static String errorCode(int errorCode, String msg) throws JSONException {
         JSONObject result = new JSONObject();
         JSONObject data = new JSONObject();
-        data.put("error", String.valueOf(errorCode));
         data.put("msg", msg);
-        result.put("statis", data);
+        data.put("code", String.valueOf(errorCode));
+        result.put("errorStatus", data);
         return result.toString();
     }
 
