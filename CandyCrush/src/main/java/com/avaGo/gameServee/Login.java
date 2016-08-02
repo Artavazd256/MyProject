@@ -49,7 +49,7 @@ public class Login extends HttpServlet {
                 return;
             }
             if(!UtilsMongo.isUserExists(uid, collection)) {
-                createUser(uid);
+                UserModel.createUser(uid);
             }
             sendUserInfo(uid);
         } catch (JSONException e) {
@@ -65,11 +65,6 @@ public class Login extends HttpServlet {
         Document user = UserModel.getUserByUID(uid);
         String userInfo = ProtocolsOutput.getUserInfo(user);
         Utils.sendMessage(response, userInfo);
-    }
-
-    private void createUser(String uid) {
-        Document userDocument = Utils.getUserDocument(uid);
-        collection.insertOne(userDocument);
     }
 
 }
