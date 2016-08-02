@@ -73,9 +73,9 @@ public class UpdateUser extends HttpServlet {
      */
     private void updateDoc(String user) {
         Document userDoc = Document.parse(user);
-        String id = userDoc.getString("_id");
+        String uid = userDoc.getString("uid");
         userDoc.remove("_id");
-        collection.findOneAndReplace(eq("_id", new ObjectId(id)), userDoc);
+        collection.findOneAndReplace(eq("uid", uid), userDoc);
         MongoConnector.closeMongo(mongoClient);
     }
 
