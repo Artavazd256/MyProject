@@ -35,7 +35,7 @@ public class UserInfo extends HttpServlet {
         try {
             main(request, response);
         } catch (JSONException e) {
-            if (Settings.DEBUG) {
+            if (Settings.IS_DEBUG) {
                 System.err.println( "ERROR from POST: " + e.toString());
                 e.printStackTrace();
             }
@@ -46,7 +46,7 @@ public class UserInfo extends HttpServlet {
         try {
             main(request, response);
         } catch (JSONException e) {
-            if (Settings.DEBUG) {
+            if (Settings.IS_DEBUG) {
                 System.err.println( "ERROR from GET: " + e.toString());
                 e.printStackTrace();
             }

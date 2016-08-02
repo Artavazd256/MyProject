@@ -1,11 +1,11 @@
 package com.avaGo.gameServee;
 
 import com.avaGo.gameServee.model.MongoConnector;
+import com.avaGo.gameServee.model.UserModel;
 import com.avaGo.gameServee.model.UtilsMongo;
 import com.avaGo.gameServee.protocule.ProtocolsOutput;
 import com.avaGo.gameServee.setting.Settings;
 import com.avaGo.gameServee.utils.Utils;
-import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -26,48 +26,44 @@ public class Login extends HttpServlet {
     private MongoClient mongoClient = MongoConnector.getMongoClient();
     private MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, MongoConnector.DATA_BASE_NAME);
     private MongoCollection<Document> collection = MongoConnector.getCollection(myGame, "Users");
+    private HttpServletRequest request;
+    private HttpServletResponse response;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
-        try {
-            handler(request, response);
-        } catch (JSONException e) {
-            if (Settings.DEBUG) {
-                System.out.println("From doGet" + e.toString());
-                e.printStackTrace();
-            }
-        }
+        this.request = request;
+        this.response = response;
+        main("GET");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+        this.request = request;
+        this.response = response;
+        main("POST");
+    }
+
+    private void main(String from) {
+        String uid = request.getParameter("uid");
         try {
-            handler(request, response);
+            if(Utils.isNull(uid)) {
+                Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.PROTOCOL_ERROR));
+                return;
+            }
+            if(!UtilsMongo.isUserExists(uid, collection)) {
+                createUser(uid);
+            }
+            sendUserInfo(uid);
         } catch (JSONException e) {
-            if (Settings.DEBUG) {
-                System.out.println("From doPost" + e.toString());
+            if (Settings.IS_DEBUG) {
+                System.out.println(String.format("ERROR From %s: ", from) + e.toString());
                 e.printStackTrace();
             }
         }
     }
 
-    private void handler(HttpServletRequest request, HttpServletResponse response) throws JSONException {
-        String uid = request.getParameter("uid");
-        if(Utils.isNull(uid)) {
-            Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.PROTOCOL_ERROR));
-            return;
-        }
-        if(!UtilsMongo.isUserExists(uid, collection)) {
-            createUser(uid);
-        }
-        sendUserInfo(uid, response);
-    }
 
-
-
-    private void sendUserInfo(String uid, HttpServletResponse response) throws JSONException {
-        BasicDBObject query = new BasicDBObject();
-        query.put("uid", uid);
-        Document first = collection.find(query).first();
-        String userInfo = ProtocolsOutput.getUserInfo(first);
+    private void sendUserInfo(String uid) throws JSONException {
+        Document user = UserModel.getUserByUID(uid);
+        String userInfo = ProtocolsOutput.getUserInfo(user);
         Utils.sendMessage(response, userInfo);
     }
 

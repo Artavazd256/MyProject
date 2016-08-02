@@ -72,7 +72,7 @@ public class Utils {
             outputStream.flush();
             outputStream.close();
         } catch (IOException e) {
-            if (Settings.DEBUG) {
+            if (Settings.IS_DEBUG) {
                 e.printStackTrace();
                 System.out.print(String.format("ERROR: %s", e.toString()));
             }

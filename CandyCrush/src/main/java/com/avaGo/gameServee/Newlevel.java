@@ -20,6 +20,7 @@ import java.io.IOException;
  */
 @WebServlet(value = "/newlevel", name = "Newlevel")
 public class Newlevel extends HttpServlet {
+    // TODO the class need clenup
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String level = getLevel(request, response);
         if(level != null) {

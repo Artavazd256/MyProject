@@ -36,12 +36,12 @@ public class UpdateLevel extends HttpServlet {
         try {
             doc = Utils.getParam(request, response, "doc");
         } catch (JSONException e) {
-            if(Settings.DEBUG) {
+            if(Settings.IS_DEBUG) {
                 System.err.println("from POST" + e.toString());
                 e.printStackTrace();
             }
         }
-        if(Settings.DEBUG) {
+        if(Settings.IS_DEBUG) {
             System.out.println("doc from POST = " + doc);
         }
         assert (doc != null);
@@ -55,12 +55,12 @@ public class UpdateLevel extends HttpServlet {
         try {
             doc = Utils.getParam(request, response, "doc");
         } catch (JSONException e) {
-            if(Settings.DEBUG) {
+            if(Settings.IS_DEBUG) {
                 System.err.println("from GET " + e.toString());
                 e.printStackTrace();
             }
         }
-        if(Settings.DEBUG) {
+        if(Settings.IS_DEBUG) {
             System.out.println("doc from GET = " + doc);
         }
         assert (doc != null);

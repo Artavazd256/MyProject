@@ -8,7 +8,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.json.JSONException;
 
 import javax.servlet.ServletException;
@@ -35,7 +34,7 @@ public class UpdateUser extends HttpServlet {
         try {
             main(request, response);
         } catch (JSONException e) {
-            if(Settings.DEBUG) {
+            if(Settings.IS_DEBUG) {
                 System.err.println("ERROR: From POST" + e.toString());
                 e.printStackTrace();
             }
@@ -47,7 +46,7 @@ public class UpdateUser extends HttpServlet {
         try {
             main(request, response);
         } catch (JSONException e) {
-            if(Settings.DEBUG) {
+            if(Settings.IS_DEBUG) {
                 System.err.println("ERROR: From GET" + e.toString());
                 e.printStackTrace();
             }

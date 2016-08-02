@@ -25,12 +25,16 @@ import java.io.IOException;
  */
 @WebServlet(value = "/deleteLevel", name = "DeleteLevel")
 public class DeleteLevel extends HttpServlet {
+    private MongoClient mongoClient = MongoConnector.getMongoClient();
+    private MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, "MyGame");
+    private MongoCollection<Document> levels = MongoConnector.getCollection(myGame, "Levels");
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = Utils.getIDFromRequest(request, response);
         try {
             deleteLevel(id, response);
         } catch (JSONException e) {
-            if(Settings.DEBUG) {
+            if(Settings.IS_DEBUG) {
                 System.err.println("from POST " + e.toString());
                 e.printStackTrace();
             }
@@ -42,7 +46,7 @@ public class DeleteLevel extends HttpServlet {
         try {
             deleteLevel(id, response);
         } catch (JSONException e) {
-            if(Settings.DEBUG) {
+            if(Settings.IS_DEBUG) {
                 System.err.println("from GET" + e.toString());
                 e.printStackTrace();
             }
@@ -52,9 +56,6 @@ public class DeleteLevel extends HttpServlet {
 
     private void deleteLevel(String id, HttpServletResponse response) throws IOException, JSONException {
         if (ObjectId.isValid(id)) {
-            MongoClient mongoClient = MongoConnector.getMongoClient();
-            MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, "MyGame");
-            MongoCollection<Document> levels = MongoConnector.getCollection(myGame, "Levels");
             BasicDBObject query = new BasicDBObject();
             query.put("_id", new ObjectId(id));
             levels.deleteOne(query);
