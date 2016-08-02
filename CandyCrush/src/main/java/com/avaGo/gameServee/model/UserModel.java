@@ -60,13 +60,14 @@ public class UserModel {
     }
 
     /** Update all user info
+     *
      * @param user
+     * @param uid
      * @return
      * @throws JSONException
      */
-    public static boolean updateDoc(String user) throws JSONException {
+    public static boolean updateDoc(String user, String uid) throws JSONException {
         Document userDoc = Document.parse(user);
-        String uid = userDoc.getString("uid");
         userDoc.remove("_id");
         UpdateResult status = collection.replaceOne(eq("uid", uid), userDoc);
         return status.getMatchedCount() != 0 ? true : false;

@@ -77,7 +77,7 @@ public class UpdateUser extends HttpServlet {
     private void updateDoc(String user) throws JSONException {
         Document userDoc = Document.parse(user);
         String uid = userDoc.getString("uid");
-        boolean status = UserModel.updateDoc(user);
+        boolean status = UserModel.updateDoc(user, uid);
         if (status) {
             Utils.sendMessage(response, ProtocolsOutput.statusOk("UserUpdate"));
         } else {
