@@ -1,12 +1,16 @@
 package com.avaGo.gameServee.model;
 
+import com.avaGo.gameServee.protocule.ProtocolsOutput;
+import com.avaGo.gameServee.utils.Utils;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
+import org.json.JSONException;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -53,6 +57,19 @@ public class UserModel {
     public static void createUser(String uid) {
         Document userDocument = getUserDocument(uid);
         collection.insertOne(userDocument);
+    }
+
+    /** Update all user info
+     * @param user
+     * @return
+     * @throws JSONException
+     */
+    public static boolean updateDoc(String user) throws JSONException {
+        Document userDoc = Document.parse(user);
+        String uid = userDoc.getString("uid");
+        userDoc.remove("_id");
+        UpdateResult status = collection.replaceOne(eq("uid", uid), userDoc);
+        return status.getMatchedCount() != 0 ? true : false;
     }
 
 

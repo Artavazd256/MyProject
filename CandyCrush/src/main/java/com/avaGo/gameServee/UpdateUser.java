@@ -1,6 +1,7 @@
 package com.avaGo.gameServee;
 
 import com.avaGo.gameServee.model.MongoConnector;
+import com.avaGo.gameServee.model.UserModel;
 import com.avaGo.gameServee.protocule.ProtocolsOutput;
 import com.avaGo.gameServee.setting.Settings;
 import com.avaGo.gameServee.utils.Utils;
@@ -76,10 +77,12 @@ public class UpdateUser extends HttpServlet {
     private void updateDoc(String user) throws JSONException {
         Document userDoc = Document.parse(user);
         String uid = userDoc.getString("uid");
-        userDoc.remove("_id");
-        collection.findOneAndReplace(eq("uid", uid), userDoc);
-        //MongoConnector.closeMongo(mongoClient);
-        Utils.sendMessage(response, ProtocolsOutput.statusOk("UserUpdate"));
+        boolean status = UserModel.updateDoc(user);
+        if (status) {
+            Utils.sendMessage(response, ProtocolsOutput.statusOk("UserUpdate"));
+        } else {
+            Utils.sendMessage(response, ProtocolsOutput.errorCode(5, String.format("User %s user data not updated", uid)));
+        }
     }
 
 }
