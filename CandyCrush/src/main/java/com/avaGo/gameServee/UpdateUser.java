@@ -64,7 +64,7 @@ public class UpdateUser extends HttpServlet {
         if (!Utils.isNull(userInfoStr)) {
             updateDoc(userInfoStr);
         } else {
-            Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.PROTOCOL_ERROR, "The protocole is incorrect"));
+            Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.PROTOCOL_ERROR, "The protocol is incorrect"));
         }
     }
 
