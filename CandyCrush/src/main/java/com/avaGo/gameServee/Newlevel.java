@@ -77,7 +77,7 @@ public class Newlevel extends HttpServlet {
             ServletOutputStream outputStream = response.getOutputStream();
             outputStream.write(String.format("ERROR: The %s level exists", doc.getString("level") ).getBytes());
         }
-        MongoConnector.closeMongo(mongoClient);
+        //MongoConnector.closeMongo(mongoClient);
     }
 
     /**

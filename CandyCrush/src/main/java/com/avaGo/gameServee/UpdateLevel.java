@@ -25,6 +25,10 @@ import java.io.IOException;
  */
 @WebServlet(value = "/updateLevel", name = "UpdateLevel")
 public class UpdateLevel extends HttpServlet {
+    private MongoClient mongoClient = MongoConnector.getMongoClient();
+    private MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, "MyGame");
+    private MongoCollection<Document> levels = MongoConnector.getCollection(myGame, "Levels");
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = Utils.getIDFromRequest(request, response);
         assert (id != null);
@@ -64,14 +68,11 @@ public class UpdateLevel extends HttpServlet {
     }
 
     private void updateDoc(String id, String doc) {
-        MongoClient mongoClient = MongoConnector.getMongoClient();
-        MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, "MyGame");
-        MongoCollection<Document> levels = MongoConnector.getCollection(myGame, "Levels");
         BasicDBObject query = new BasicDBObject();
         Document insertDoc = Document.parse(doc);
         insertDoc.remove("_id");
         levels.findOneAndReplace(eq("_id", new ObjectId(id)), insertDoc);
-        MongoConnector.closeMongo(mongoClient);
+        //MongoConnector.closeMongo(mongoClient);
     }
 
 

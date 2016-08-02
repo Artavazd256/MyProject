@@ -29,7 +29,8 @@ public class UpdateUser extends HttpServlet {
     private MongoClient mongoClient = MongoConnector.getMongoClient();
     private MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, MongoConnector.DATA_BASE_NAME);
     private MongoCollection<Document> collection = MongoConnector.getCollection(myGame, "Users");
-
+    private HttpServletRequest request;
+    private HttpServletResponse response;
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             main(request, response);
@@ -60,6 +61,8 @@ public class UpdateUser extends HttpServlet {
      * @throws JSONException
      */
     private void main(HttpServletRequest request, HttpServletResponse response) throws JSONException {
+        this.request = request;
+        this.response = response;
         String userInfoStr = request.getParameter("userInfo");
         if (!Utils.isNull(userInfoStr)) {
             updateDoc(userInfoStr);
@@ -71,12 +74,13 @@ public class UpdateUser extends HttpServlet {
     /**
      * @param user
      */
-    private void updateDoc(String user) {
+    private void updateDoc(String user) throws JSONException {
         Document userDoc = Document.parse(user);
         String uid = userDoc.getString("uid");
         userDoc.remove("_id");
         collection.findOneAndReplace(eq("uid", uid), userDoc);
-        MongoConnector.closeMongo(mongoClient);
+        //MongoConnector.closeMongo(mongoClient);
+        Utils.sendMessage(response, ProtocolsOutput.statusOk("UserUpdate"));
     }
 
 }

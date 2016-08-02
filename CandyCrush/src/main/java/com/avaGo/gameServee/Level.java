@@ -74,7 +74,7 @@ public class Level extends HttpServlet {
                 return String.format("ERROR: the %s _id not exists", id);
             }
             levelDoc = first.toJson();
-            MongoConnector.closeMongo(mongoClient);
+            //MongoConnector.closeMongo(mongoClient);
         } else {
             return "ERROR: invalid _id";
         }
