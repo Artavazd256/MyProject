@@ -51,6 +51,7 @@ public class UserModel {
         user.put("lifeStartTime", System.currentTimeMillis());
         user.put("foreverLifeTime", 0);
         user.put("friendsEventsUIDS", friendsEventsUIDS);
+        user.put("coins", 0);
         return user;
     }
 
