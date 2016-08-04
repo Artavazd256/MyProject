@@ -14,7 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -145,5 +147,25 @@ public class Utils {
         return r;
     }
 
+    /**
+     *  Get access token from facebook
+     * @param url String
+     * @return String if get access token return access token else return null
+     * @throws IOException
+     */
+    public static String getContentOFURL(String url) throws IOException {
+        String accessToken = null;
+        URL u = new URL(url);
+        InputStream inputStream = u.openStream();
+        StringBuffer buffer = new StringBuffer();
+        int b;
+        while ((b = inputStream.read()) != -1) {
+            buffer.append((char)b);
+        }
+        if (buffer.length() != 0 ) {
+            accessToken = buffer.toString();
+        }
+        return accessToken;
+    }
 
 }

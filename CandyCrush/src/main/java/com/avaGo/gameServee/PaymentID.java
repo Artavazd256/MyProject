@@ -1,12 +1,16 @@
-package com.avaGo.gameServee.payment;
+package com.avaGo.gameServee;
 
-import com.avaGo.gameServee.model.MarketModel;
+import com.avaGo.gameServee.model.PaymentStatus;
+import com.avaGo.gameServee.model.ProductModel;
 import com.avaGo.gameServee.model.MongoConnector;
+import com.avaGo.gameServee.protocule.ProtocolsOutput;
 import com.avaGo.gameServee.setting.Settings;
+import com.avaGo.gameServee.utils.Utils;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.json.JSONException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,9 +27,6 @@ public class PaymentID extends HttpServlet {
     private static final String COLLECTION_NAME = "PaymentStatus";
     private HttpServletRequest request = null;
     private HttpServletResponse response = null;
-    private MongoClient mongoClient = MongoConnector.getMongoClient();
-    private MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, MongoConnector.DATA_BASE_NAME);
-    private MongoCollection<Document> collection = MongoConnector.getCollection(myGame, COLLECTION_NAME);
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         this.request = request;
@@ -41,6 +42,27 @@ public class PaymentID extends HttpServlet {
 
     void main(String from)  {
         String url = String.format(Settings.URL_REAL, request.getScheme(), request.getServerName(), request.getServerPort());
-        MarketModel.initMarket(url);
+        ProductModel.initMarket(url);
+        String uid = request.getParameter("uid");
+        if (!Utils.isNull(uid)) {
+            String requestID = PaymentStatus.insertNewRecord(uid);
+            try {
+                Utils.sendMessage(response, ProtocolsOutput.getRequestID(requestID));
+            } catch (JSONException e) {
+                if (Settings.IS_DEBUG) {
+                    System.err.println(String.format("ERROR from %s: %s",from, e.toString()));
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            try {
+                Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.PROTOCOL_ERROR, "The uid is field is null"));
+            } catch (JSONException e) {
+                if (Settings.IS_DEBUG) {
+                    System.err.println(String.format("ERROR from %s: %s",from, e.toString()));
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
