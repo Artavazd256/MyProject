@@ -1,6 +1,7 @@
 package com.avaGo.gameServee;
 
 import com.avaGo.gameServee.model.MongoConnector;
+import com.avaGo.gameServee.model.UserModel;
 import com.avaGo.gameServee.model.UtilsMongo;
 import com.avaGo.gameServee.protocule.ProtocolsOutput;
 import com.avaGo.gameServee.setting.Settings;
@@ -58,6 +59,7 @@ public class UserInfo extends HttpServlet {
         String uid = request.getParameter("uid");
         if (!Utils.isNull(uid)) {
             if(UtilsMongo.isUserExists(uid, collection)) {
+                UserModel.UpdateForeverLifeTime(uid);
                 FindIterable<Document> doc = collection.find(eq("uid", uid)).limit(1);
                 Document first = doc.first();
                 Utils.sendMessage(response, first.toJson());
