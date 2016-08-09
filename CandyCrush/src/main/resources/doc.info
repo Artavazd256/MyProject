@@ -1,18 +1,45 @@
-delete level by id
+Delete level by id
 https://aratta.xyz:8433/game/delete?id=55555
 
-get level by id 
+Get level by id
 https://aratta.xyz:8433/game/level?id=55555
 
-get all levels 
+Get all levels
 https://aratta.xyz:8433/game/list
 
-create new level 
-
+Create new level
 https://aratta.xyz:8433/game/newlevel?level={}
 
-update level 
-https://aratta.xyz:8433/game/update?doc={}&id=85
+Update level
+https://aratta.xyz:8433/game/updateLevel?doc={}&id=85
+
+Login
+https://aratta.xyz:8433/game/login?uid=44514541144212
+
+User info
+https://aratta.xyz:8433/game/userInfo?uid=44514541144212
+
+Update user info
+https://aratta.xyz:8433/game/updateUser?userInfo={"uid":"44514541144212", ......
+
+Get life from friend
+https://aratta.xyz:8433/game/getLifeFromFriend?uid=44514541144212&uidFrom=4121521554545
+
+
+Get Payment ID
+https://aratta.xyz:8433/game/PaymentID?uid=44514541144212
+
+
+Product URLS
+https://aratta.xyz:8433/game/FB/10_step.jsp
+https://aratta.xyz:8433/game/FB/50_coins.jsp
+https://aratta.xyz:8433/game/FB/270_coins.jsp
+https://aratta.xyz:8433/game/FB/550_coins_forever_life_with_2_hours.jsp
+https://aratta.xyz:8433/game/FB/1150_coins_forever_life_with_2_hours.jsp
+https://aratta.xyz:8433/game/FB/3000_coins_forever_life_with_2_hours.jsp
+https://aratta.xyz:8433/game/FB/6500_coins_forever_life_with_2_hours.jsp
+
+
 
 
 

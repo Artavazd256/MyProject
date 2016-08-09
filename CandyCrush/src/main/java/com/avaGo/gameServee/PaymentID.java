@@ -24,7 +24,6 @@ import java.io.IOException;
  */
 @WebServlet(name = "PaymentID", urlPatterns = "/PaymentID")
 public class PaymentID extends HttpServlet {
-    private static final String COLLECTION_NAME = "PaymentStatus";
     private HttpServletRequest request = null;
     private HttpServletResponse response = null;
 
