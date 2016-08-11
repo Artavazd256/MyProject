@@ -59,7 +59,7 @@ public class UserInfo extends HttpServlet {
         String uid = request.getParameter("uid");
         if (!Utils.isNull(uid)) {
             if(UtilsMongo.isUserExists(uid, collection)) {
-                UserModel.UpdateForeverLifeTime(uid);
+                UserModel.updateForeverLifeTime(uid);
                 FindIterable<Document> doc = collection.find(eq("uid", uid)).limit(1);
                 Document first = doc.first();
                 Utils.sendMessage(response, first.toJson());

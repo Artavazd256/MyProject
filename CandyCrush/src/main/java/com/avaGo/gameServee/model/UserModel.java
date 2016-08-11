@@ -12,9 +12,7 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.json.JSONException;
 
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
-import static com.mongodb.client.model.Filters.gt;
+import static com.mongodb.client.model.Filters.*;
 
 /**
  * Created by artavzd on 8/2/16.
@@ -76,8 +74,16 @@ public class UserModel {
         return status.getMatchedCount() != 0 ? true : false;
     }
 
-    public static boolean UpdateForeverLifeTime(String uid) {
-        UpdateResult updateResult = collection.replaceOne(and(eq("uid", uid), gt("foreverLife", System.currentTimeMillis())), new Document("$set", new Document("foreverLife", 0l)));
+    public static boolean updateForeverLifeTime(String uid) {
+        UpdateResult updateResult = collection.updateOne(and(eq("uid", uid), lt("foreverLifeTime", System.currentTimeMillis())), new Document("$set", new Document("foreverLifeTime", 0l)));
+        if (updateResult.getMatchedCount() != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean updateLastVisitDate(String uid) {
+        UpdateResult updateResult = collection.updateOne(eq("uid", uid), new Document("$set", new Document("lastVisitDate", System.currentTimeMillis())));
         if (updateResult.getMatchedCount() != 0) {
             return true;
         }
