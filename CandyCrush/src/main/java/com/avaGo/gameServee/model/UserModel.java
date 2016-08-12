@@ -8,6 +8,7 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.json.JSONException;
@@ -88,6 +89,35 @@ public class UserModel {
             return true;
         }
         return false;
+    }
+
+    public static DeleteResult deleteUserByUID(String uid) {
+        DeleteResult status = collection.deleteOne(eq("uid", uid));
+        return status;
+    }
+
+    public static  UpdateResult addNewLevelInfo(String uid, Long xp, Integer level, Integer stare) {
+        BasicDBObject levelDoc = new BasicDBObject();
+        levelDoc.put("level", level);
+        levelDoc.put("stare", stare);
+        levelDoc.put("xp", xp);
+        levelDoc.put("date", System.currentTimeMillis());
+        UpdateResult status = collection.updateOne(eq("uid", uid), new BasicDBObject("$push", new BasicDBObject("currentLevelsXP", levelDoc)));
+        return status;
+    }
+
+    public static UpdateResult updateLevelInfo(String uid, Long xp, Integer level, Integer stare) {
+        assert (uid != null);
+        assert (xp != null);
+        assert (level != null);
+        assert (stare != null);
+        BasicDBObject levelDoc = new BasicDBObject();
+        levelDoc.put("level", level);
+        levelDoc.put("stare", stare);
+        levelDoc.put("xp", xp);
+        levelDoc.put("date", System.currentTimeMillis());
+        UpdateResult status = collection.updateOne(and(eq("uid", uid), lt("currentLevelsXP.xp", xp)), new BasicDBObject("$set", new BasicDBObject("currentLevelsXP.$", levelDoc)));
+        return status;
     }
 
 
