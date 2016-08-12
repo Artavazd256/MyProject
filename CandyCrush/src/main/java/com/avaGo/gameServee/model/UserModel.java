@@ -26,8 +26,8 @@ public class UserModel {
     private static final MongoCollection<Document> collection = MongoConnector.getCollection(myGame, COLLECTION_NAME);
 
     /** Get user by UID
-     * @param uid
-     * @return
+     * @param uid {@link String}
+     * @return {@link Document}
      */
     public static Document getUserByUID(String uid) {
         assert (uid != null):"The uid argument of getUserByUID function is null";
@@ -36,6 +36,10 @@ public class UserModel {
         return user;
     }
 
+    /** Get User Document
+     * @param uid {@link String}
+     * @return {@link Document}
+     */
     public static Document getUserDocument(String uid) {
         BasicDBList currentLevelsXP = new BasicDBList();
         BasicDBList friendsEventsUIDS = new BasicDBList();
@@ -62,10 +66,9 @@ public class UserModel {
     }
 
     /** Update all user info
-     *
-     * @param user
-     * @param uid
-     * @return
+     * @param user {@link String}
+     * @param uid {@link String}
+     * @return {@link Boolean}
      * @throws JSONException
      */
     public static boolean updateDoc(String user, String uid) throws JSONException {
@@ -75,6 +78,10 @@ public class UserModel {
         return status.getMatchedCount() != 0 ? true : false;
     }
 
+    /** Update forever life time
+     * @param uid {@link String}
+     * @return {@link Boolean}
+     */
     public static boolean updateForeverLifeTime(String uid) {
         UpdateResult updateResult = collection.updateOne(and(eq("uid", uid), lt("foreverLifeTime", System.currentTimeMillis())), new Document("$set", new Document("foreverLifeTime", 0l)));
         if (updateResult.getMatchedCount() != 0) {
@@ -83,6 +90,10 @@ public class UserModel {
         return false;
     }
 
+    /** Updated Last Visit date
+     * @param uid
+     * @return {@link Boolean}
+     */
     public static boolean updateLastVisitDate(String uid) {
         UpdateResult updateResult = collection.updateOne(eq("uid", uid), new Document("$set", new Document("lastVisitDate", System.currentTimeMillis())));
         if (updateResult.getMatchedCount() != 0) {
@@ -91,11 +102,22 @@ public class UserModel {
         return false;
     }
 
+    /** Delete user by UID
+     * @param uid {@link String}
+     * @return {@link UpdateResult}
+     */
     public static DeleteResult deleteUserByUID(String uid) {
         DeleteResult status = collection.deleteOne(eq("uid", uid));
         return status;
     }
 
+    /** add new Level info
+     * @param uid {@link String}
+     * @param xp {@link Long}
+     * @param level {@link Integer}
+     * @param stare {@link Integer}
+     * @return {@link UpdateResult}
+     */
     public static  UpdateResult addNewLevelInfo(String uid, Long xp, Integer level, Integer stare) {
         BasicDBObject levelDoc = new BasicDBObject();
         levelDoc.put("level", level);
@@ -106,6 +128,13 @@ public class UserModel {
         return status;
     }
 
+    /** Update Level info
+     * @param uid {@link String}
+     * @param xp {@link Long}
+     * @param level {@link Integer}
+     * @param stare {@link Integer}
+     * @return {@link UpdateResult}
+     */
     public static UpdateResult updateLevelInfo(String uid, Long xp, Integer level, Integer stare) {
         assert (uid != null);
         assert (xp != null);
