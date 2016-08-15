@@ -57,6 +57,9 @@ public class UserModel {
         user.put("foreverLifeTime", 0);
         user.put("friendsEventsUIDS", friendsEventsUIDS);
         user.put("coins", 0);
+        user.put("volume", 0.5);
+        user.put("language", "English");
+        user.put("busters", new BasicDBList());
         return user;
     }
 
@@ -149,6 +152,13 @@ public class UserModel {
         return status;
     }
 
-
+    /** Check user exists
+     * @param uid {@link String}
+     * @return {@link Boolean}
+     */
+    public static boolean isUserExist(String uid) {
+        Document doc = collection.find(eq("uid", uid)).first();
+        return doc != null ? true : false;
+    }
 
 }

@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * Created by root on 2/10/16.
  */
-@WebServlet(value = "/deleteLevel", name = "DeleteLevel")
+@WebServlet(value = "/admin/deleteLevel", name = "DeleteLevel")
 public class DeleteLevel extends HttpServlet {
     private MongoClient mongoClient = MongoConnector.getMongoClient();
     private MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, "MyGame");

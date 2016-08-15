@@ -1,8 +1,11 @@
 package com.avaGo.gameServee.protocule;
 
 import org.bson.Document;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * Created by artavzd on 7/16/16.
@@ -64,6 +67,24 @@ public class ProtocolsOutput {
         JSONObject data = new JSONObject();
         data.put("requestID", requestID);
         return data.toString();
+    }
+
+    public static String getOptions(List<Document> market, String language, Double volume) throws JSONException {
+        assert (market != null);
+        assert (language != null);
+        assert (volume != null);
+        JSONObject result = new JSONObject();
+        JSONArray mA = new JSONArray();
+        for (Document doc : market) {
+            doc.remove("_id");
+            mA.put(new JSONObject(doc.toJson()));
+        }
+        result.put("market", mA);
+        JSONObject settings = new JSONObject();
+        settings.put("language", language);
+        settings.put("volume", volume);
+        result.put("settings", settings);
+        return result.toString();
     }
 
 }

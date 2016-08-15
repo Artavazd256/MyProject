@@ -18,7 +18,7 @@ import java.io.IOException;
 /**
  * Created by root on 2/10/16.
  */
-@WebServlet(value = "/newlevel", name = "Newlevel")
+@WebServlet(value = "/admin/newlevel", name = "Newlevel")
 public class Newlevel extends HttpServlet {
     // TODO the class need clenup
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
