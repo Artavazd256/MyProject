@@ -13,6 +13,8 @@ import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.mongodb.client.model.Filters.eq;
+
 /**
  * Created by artavzd on 8/14/16.
  */
@@ -41,12 +43,18 @@ public class MarketModel {
         return root;
     }
 
+    /**
+     * Init market data to database
+     */
     private static void initMarket() {
         if (collection.count() == 0) {
             collection.insertMany(getContentForBuster());
         }
     }
 
+    /** Get all market product
+     * @return  {@link List<Document>}
+     */
     public static List<Document> getAllMarket() {
         List<Document> market = new ArrayList<>();
         initMarket();
@@ -57,5 +65,14 @@ public class MarketModel {
         return market;
     }
 
+    /** Get Product by Name
+     * @param name {@link String}
+     * @return {@link Document}
+     */
+    public static Document getProductByName(String name) {
+        assert (name != null);
+        Document product = collection.find(eq("name", name)).first();
+        return product;
+    }
 
 }

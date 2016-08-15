@@ -15,6 +15,39 @@ public class UserModelTest {
     private static final String uid = "8888";
 
     @Test
+    public void decrementCoins() throws Exception {
+        UserModel.createUser(uid);
+        UserModel.decrementCoins(uid, 5);
+        Document userDoc = UserModel.getUserByUID(uid);
+        Integer coins = userDoc.getInteger("coins");
+        assertTrue(coins == 95);
+        UserModel.deleteUserByUID(uid);
+    }
+
+
+    @Test
+    public void isUserExist() throws Exception {
+        UserModel.createUser(uid);
+        boolean status = UserModel.isUserExist(uid);
+        UserModel.deleteUserByUID(uid);
+        assertTrue(status);
+    }
+
+    @Test
+    public void isUserGreaterCoin() throws Exception {
+        UserModel.createUser(uid);
+        boolean status = UserModel.isUserGreaterCoin(uid, 10);
+        assertTrue(status);
+        status = UserModel.isUserGreaterCoin(uid, 100);
+        assertTrue(status);
+        status = UserModel.isUserGreaterCoin(uid, 101);
+        assertFalse(status);
+        UserModel.deleteUserByUID(uid);
+
+    }
+
+
+    @Test
     public void getUserByUID() throws Exception {
         UserModel.createUser(uid);
         Document doc = UserModel.getUserByUID(uid);

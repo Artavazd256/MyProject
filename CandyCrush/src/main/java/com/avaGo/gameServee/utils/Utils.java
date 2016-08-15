@@ -168,4 +168,14 @@ public class Utils {
         return accessToken;
     }
 
+    /** Check object is null or empty
+     * @param uid {@link String}
+     * @return {@link Boolean}
+     */
+    public static boolean isNullOrEmpty(String uid) {
+        if ("".equals(uid) || null == uid) {
+            return true;
+        }
+        return false;
+    }
 }

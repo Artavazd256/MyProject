@@ -56,7 +56,7 @@ public class UserModel {
         user.put("lifeStartTime", System.currentTimeMillis());
         user.put("foreverLifeTime", 0);
         user.put("friendsEventsUIDS", friendsEventsUIDS);
-        user.put("coins", 0);
+        user.put("coins", 100);
         user.put("volume", 0.5);
         user.put("language", "English");
         user.put("busters", new BasicDBList());
@@ -159,6 +159,27 @@ public class UserModel {
     public static boolean isUserExist(String uid) {
         Document doc = collection.find(eq("uid", uid)).first();
         return doc != null ? true : false;
+    }
+
+    /** Is user greater coins
+     * @param uid {@link String}
+     * @param coin {@link Integer}
+     * @return
+     */
+    public static boolean isUserGreaterCoin(String uid, Integer coin) {
+        assert (uid != null);
+        assert (coin != null);
+        return collection.find(and(eq("uid", uid), gte("coins", coin))).first() != null ? true : false;
+    }
+
+    /**
+     * @param uid
+     * @param coins
+     * @return
+     */
+    public static UpdateResult decrementCoins(String uid, Integer coins) {
+        UpdateResult updateResult = collection.updateOne(eq("uid", uid), new BasicDBObject("$inc", new BasicDBObject("coins", -coins)));
+        return updateResult;
     }
 
 }
