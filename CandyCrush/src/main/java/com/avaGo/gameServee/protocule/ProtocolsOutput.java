@@ -87,4 +87,30 @@ public class ProtocolsOutput {
         return result.toString();
     }
 
+    /** Get buster
+     * @param productDoc {@link Document}
+     * @return {@link String}
+     * @throws JSONException
+     */
+    public static String buster(Document productDoc) throws JSONException {
+        JSONObject result = new JSONObject();
+        JSONObject buster = new JSONObject(productDoc.toJson());
+        result.put("buster", buster);
+        return result.toString();
+    }
+
+    /** warning
+     * @param warningProductNeedToAddInCode {@link int}
+     * @param msg {@link String}
+     * @return {@link String}
+     * @throws JSONException
+     */
+    public static String warning(int warningProductNeedToAddInCode, String msg) throws JSONException {
+        JSONObject result = new JSONObject();
+        JSONObject data = new JSONObject();
+        data.put("msg", msg);
+        data.put("code", String.valueOf(warningProductNeedToAddInCode));
+        result.put("WarningStatus", data);
+        return result.toString();
+    }
 }

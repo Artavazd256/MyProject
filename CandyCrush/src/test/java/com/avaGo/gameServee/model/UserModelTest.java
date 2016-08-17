@@ -2,6 +2,7 @@ package com.avaGo.gameServee.model;
 
 import com.mongodb.BasicDBObject;
 import org.bson.Document;
+import org.bson.types.BasicBSONList;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,6 +14,21 @@ import static org.junit.Assert.*;
  */
 public class UserModelTest {
     private static final String uid = "8888";
+
+    @Test
+    public void addBuster() throws Exception {
+        Document doc = new Document();
+        doc.put("name", "buster1");
+        doc.put("availableLevel", 16);
+        UserModel.createUser(uid);
+        UserModel.addBuster(uid, doc);
+        UserModel.addBuster(uid, doc);
+        Document userByUID = UserModel.getUserByUID(uid);
+        List r = (List) userByUID.get("busters");
+        UserModel.deleteUserByUID(uid);
+        assertTrue(r.size() == 2);
+    }
+
 
     @Test
     public void decrementCoins() throws Exception {

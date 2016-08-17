@@ -173,12 +173,24 @@ public class UserModel {
     }
 
     /**
-     * @param uid
-     * @param coins
-     * @return
+     * @param uid {@link String}
+     * @param coins {@link Integer}
+     * @return {@link UpdateResult}
      */
     public static UpdateResult decrementCoins(String uid, Integer coins) {
         UpdateResult updateResult = collection.updateOne(eq("uid", uid), new BasicDBObject("$inc", new BasicDBObject("coins", -coins)));
+        return updateResult;
+    }
+
+    /** Add Buster into user
+     * @param uid {@link String}
+     * @param productDoc {@link Document}
+     * @return {@link UpdateResult}
+     */
+    public static UpdateResult addBuster(String uid, Document productDoc) {
+        productDoc.remove("_id");
+        productDoc.remove("coin");
+        UpdateResult updateResult = collection.updateOne(eq("uid", uid), new BasicDBObject("$push", new BasicDBObject("busters", productDoc)));
         return updateResult;
     }
 
