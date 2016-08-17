@@ -67,12 +67,16 @@ public class Market extends HttpServlet {
             boolean status = UserModel.isUserGreaterCoin(uid, coin);
             if (status) {
                 switch (productName) {
-                    case "buster":
+                    case "buster1":
+                    case "buster2":
+                    case "buster3":
+                    case "buster4":
+                    case "buster5":
                         addBuster(productName, productDoc, uid, coin, from);
                         break;
                     default:
                         try {
-                            Utils.sendMessage(response, ProtocolsOutput.warning(Settings.WARNING_PRODUCT_NEED_TO_ADD_IN_CODE, "The %s product need to add in code of server"));
+                            Utils.sendMessage(response, ProtocolsOutput.warning(Settings.WARNING_PRODUCT_NEED_TO_ADD_IN_CODE, String.format("The %s product need to add in code of server", productName)));
                         } catch (JSONException e) {
                             if (Settings.IS_DEBUG) {
                                 System.err.println(String.format("ERROR from %s: %s", from, e.toString()));
@@ -95,7 +99,7 @@ public class Market extends HttpServlet {
 
         } else {
             try {
-                Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.ERROR_PRODUCT_DOESNT_EXIST, String.format("The %s product doesn't", productName)).toString());
+                Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.ERROR_PRODUCT_DOESNT_EXIST, String.format("The %s product doesn't exist", productName)).toString());
             } catch (JSONException e) {
                 if (Settings.IS_DEBUG) {
                     System.err.println(String.format("ERROR from %s: %s", from, e.toString()));
@@ -118,8 +122,8 @@ public class Market extends HttpServlet {
         UpdateResult updateResult = UserModel.addBuster(uid, productDoc);
         try {
             if (updateResult.getModifiedCount() != 0) {
-                String buster = ProtocolsOutput.buster(productDoc);
-                Utils.sendMessage(response, buster);
+                Document userDoc = UserModel.getUserByUID(uid);
+                Utils.sendMessage(response, ProtocolsOutput.getUserInfo(userDoc));
             } else {
                 Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.ERROR_PRODUCT_DID_NOT_ADD, String.format("The %s product dis not add", productName)));
             }

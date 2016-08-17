@@ -194,4 +194,15 @@ public class UserModel {
         return updateResult;
     }
 
+    /** Remove buster of user
+     * @param uid
+     * @param busterName
+     * @return
+     */
+    public static UpdateResult removeBuster(String uid, String busterName) {
+        UpdateResult updateResult = collection.updateOne(and(eq("uid", uid), eq("busters.name", busterName))
+                                               , new BasicDBObject("$pull", new BasicDBObject("busters", new BasicDBObject("name", busterName))));
+        return updateResult;
+    }
+
 }

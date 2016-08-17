@@ -13,7 +13,24 @@ import static org.junit.Assert.*;
  * Created by artavzd on 8/12/16.
  */
 public class UserModelTest {
+
     private static final String uid = "8888";
+
+    @Test
+    public void removeBuster() throws Exception {
+        Document doc = new Document();
+        UserModel.createUser(uid);
+        doc.put("name", "buster1");
+        doc.put("availableLevel", 16);
+        UserModel.addBuster(uid, doc);
+        doc.put("name", "buster2");
+        doc.put("availableLevel", 18);
+        UserModel.addBuster(uid, doc);
+        UserModel.removeBuster(uid, "buster1");
+        List r = (List) UserModel.getUserByUID(uid).get("busters");
+        UserModel.deleteUserByUID(uid);
+        assertTrue(r.size() == 1);
+    }
 
     @Test
     public void addBuster() throws Exception {

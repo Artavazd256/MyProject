@@ -13,6 +13,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.bind.helpers.AbstractMarshallerImpl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -177,5 +178,28 @@ public class Utils {
             return true;
         }
         return false;
+    }
+
+    /** Check parameter
+     * @param response {@link HttpServletRequest}
+     * @param data {@link String}
+     * @param paramName {@link String}
+     * @param from {@link String}
+     * @return
+     */
+    public static boolean checkParameter(HttpServletResponse response, String data, String paramName, String from) {
+        if (isNullOrEmpty(data)) {
+            try {
+                Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.PROTOCOL_ERROR, String.format("The %s parameter is null or empty", paramName)));
+                return false;
+            } catch (JSONException e) {
+                if (Settings.IS_DEBUG) {
+                    e.printStackTrace();
+                    System.err.println(String.format("ERROR %s from: %s", from, e.toString()));
+                }
+            }
+            return false;
+        }
+        return true;
     }
 }

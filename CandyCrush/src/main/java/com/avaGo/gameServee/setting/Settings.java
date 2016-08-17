@@ -13,6 +13,7 @@ public class Settings {
     public static final int ERROR_PRODUCT_COINS = 5;
     public static final int ERROR_PRODUCT_DID_NOT_ADD = 6;
     public static final int WARNING_PRODUCT_NEED_TO_ADD_IN_CODE = 7;
+    public static final int ACTION_NOT_COMPLETED = 8;
     public static final long TIME_OF_GET_LIFE_FROM_FRIEND = 60*60*24*1000; // seconds*mints*hours*milliseconds = 86400000 24 hours with milliseconds
     public static final boolean IS_DEBUG = true;
     public static final int MAX_LIFE = 5; // Max life count
