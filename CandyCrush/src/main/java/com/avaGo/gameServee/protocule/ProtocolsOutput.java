@@ -1,5 +1,6 @@
 package com.avaGo.gameServee.protocule;
 
+import com.mongodb.client.FindIterable;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -111,6 +112,24 @@ public class ProtocolsOutput {
         data.put("msg", msg);
         data.put("code", String.valueOf(warningProductNeedToAddInCode));
         result.put("WarningStatus", data);
+        return result.toString();
+    }
+
+    /** Get top levels
+     * @param topLevel {@link FindIterable<Document>}
+     * @return {@link String}
+     * @throws JSONException
+     */
+    public static String getTopLevels(FindIterable<Document> topLevel) throws JSONException {
+        JSONObject result = new JSONObject();
+        JSONArray top100 = new JSONArray();
+        for (Document doc : topLevel) {
+            JSONObject userDoc = new JSONObject();
+            userDoc.put("xp", doc.getInteger("xp"));
+            userDoc.put("uid", doc.getString("uid"));
+            top100.put(userDoc);
+        }
+        result.put("topLevels", top100);
         return result.toString();
     }
 }

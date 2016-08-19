@@ -1,6 +1,7 @@
 package com.avaGo.gameServee.model;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.client.FindIterable;
 import org.bson.Document;
 import org.bson.types.BasicBSONList;
 import org.junit.Test;
@@ -13,8 +14,28 @@ import static org.junit.Assert.*;
  * Created by artavzd on 8/12/16.
  */
 public class UserModelTest {
-
     private static final String uid = "8888";
+
+    @Test
+    public void getTopLevel() throws Exception {
+        UserModel.createUser(uid);
+        UserModel.addNewLevelInfo(uid, 10l, 1, 1);
+        UserModel.addNewLevelInfo(uid, 42l, 2, 2);
+        UserModel.addNewLevelInfo(uid, 82l, 3, 4);
+
+        UserModel.createUser("9999");
+        UserModel.addNewLevelInfo("9999", 10l, 1, 1);
+        UserModel.addNewLevelInfo("9999", 92l, 2, 2);
+        UserModel.addNewLevelInfo("9999", 10l, 3, 1);
+
+        FindIterable<Document> topLevel = UserModel.getTopLevel(100);
+        for (Document doc : topLevel) {
+            System.out.println(doc.toJson());
+        }
+        UserModel.deleteUserByUID(uid);
+        UserModel.deleteUserByUID("9999");
+
+    }
 
     @Test
     public void removeBuster() throws Exception {

@@ -8,10 +8,14 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.json.JSONException;
+
+import java.util.Collections;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -203,6 +207,16 @@ public class UserModel {
         UpdateResult updateResult = collection.updateOne(and(eq("uid", uid), eq("busters.name", busterName))
                                                , new BasicDBObject("$pull", new BasicDBObject("busters", new BasicDBObject("name", busterName))));
         return updateResult;
+    }
+
+
+    /** Get Top level
+     * @param count {@link String}
+     * @return {@link UpdateResult}
+     */
+    public static FindIterable<Document> getTopLevel(Integer count)  {
+       FindIterable<Document> docs = collection.find().projection(Projections.include("xp", "uid")).sort(new BasicDBObject("xp", -1)).limit(count);
+       return docs;
     }
 
 }
