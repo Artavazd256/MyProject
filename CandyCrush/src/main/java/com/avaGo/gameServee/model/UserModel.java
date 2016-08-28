@@ -1,6 +1,7 @@
 package com.avaGo.gameServee.model;
 
 import com.avaGo.gameServee.protocule.ProtocolsOutput;
+import com.avaGo.gameServee.setting.Settings;
 import com.avaGo.gameServee.utils.Utils;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -13,9 +14,17 @@ import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.json.JSONException;
 
+import javax.xml.crypto.Data;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -64,6 +73,11 @@ public class UserModel {
         user.put("volume", 0.5);
         user.put("language", "English");
         user.put("busters", new BasicDBList());
+        user.put("lastGiveBailyBonusTime", System.currentTimeMillis());
+        user.put("dailyBonusDay", 0L); // min 1 max 6
+        user.put("dailyBonus", "");
+        user.put("isDailyBonusGive", false);
+        user.put("MyBonus", new BasicDBList());
         return user;
     }
 
@@ -80,6 +94,18 @@ public class UserModel {
      */
     public static boolean updateDoc(String user, String uid) throws JSONException {
         Document userDoc = Document.parse(user);
+        userDoc.remove("_id");
+        UpdateResult status = collection.replaceOne(eq("uid", uid), userDoc);
+        return status.getMatchedCount() != 0 ? true : false;
+    }
+
+    /** Update all user info
+     * @param userDoc {@link String}
+     * @param uid {@link String}
+     * @return {@link Boolean}
+     * @throws JSONException
+     */
+    public static boolean updateDoc(Document userDoc, String uid) throws JSONException {
         userDoc.remove("_id");
         UpdateResult status = collection.replaceOne(eq("uid", uid), userDoc);
         return status.getMatchedCount() != 0 ? true : false;
@@ -186,6 +212,16 @@ public class UserModel {
         return updateResult;
     }
 
+    /**
+     * @param uid {@link String}
+     * @param coins {@link Integer}
+     * @return {@link UpdateResult}
+     */
+    public static UpdateResult incrementCoins(String uid, Integer coins) {
+        UpdateResult updateResult = collection.updateOne(eq("uid", uid), new BasicDBObject("$inc", new BasicDBObject("coins", coins)));
+        return updateResult;
+    }
+
     /** Add Buster into user
      * @param uid {@link String}
      * @param productDoc {@link Document}
@@ -219,4 +255,116 @@ public class UserModel {
        return docs;
     }
 
+    /**
+     * Add daily bonus
+     * @param uid  user id of FB {@link String}
+     */
+    public static void addDailyBonus(String uid) {
+        assert (uid != null);
+        Document user = collection.find(eq("uid", uid)).first();
+        assert (user != null);
+        Long lastGiveBailyBonusTime = user.getLong("lastGiveBailyBonusTime");
+        LocalDate lastDate = Instant.ofEpochMilli(lastGiveBailyBonusTime).atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate now = LocalDate.now();
+        long between = ChronoUnit.DAYS.between(lastDate, now);
+        Long dailyBonusDay = user.getLong("dailyBonusDay");
+        Boolean isDailyBonusGive = user.getBoolean("isDailyBonusGive");
+        String dailyBonsuName = null;
+        if (between == 0 && !isDailyBonusGive) {
+            dailyBonsuName = getDailyBonus(dailyBonusDay);
+            putDailyBonus(dailyBonsuName, user, dailyBonusDay);
+        } else if( between == 1 && !isDailyBonusGive) {
+            dailyBonsuName = getDailyBonus(dailyBonusDay);
+            putDailyBonus(dailyBonsuName, user, dailyBonusDay);
+        } else if (between > 1) { //  If 'between' is greater from 1
+            dailyBonsuName = getDailyBonus(1L);
+            putDailyBonus(dailyBonsuName, user, dailyBonusDay);
+        } else {
+            return;
+        }
+        try {
+            updateDoc(user, uid);
+        } catch (JSONException e) {
+            if (Settings.IS_DEBUG) {
+                e.printStackTrace();
+                System.err.println(String.format("Error: %s", e.toString()));
+            }
+        }
+    }
+
+    /** put daily bonus
+     * @param dailyBonsuName
+     * @param user
+     * @param dailyBonusDay
+     */
+    private static void putDailyBonus(String dailyBonsuName, Document user, Long dailyBonusDay) {
+        dailyBonusDay++; // increment
+        if (dailyBonusDay >= 6) {
+            dailyBonusDay = 2L;
+        }
+        user.put("dailyBonus", dailyBonsuName);
+        user.put("dailyBonusDay", dailyBonusDay);
+        user.put("isDailyBonusGive", false);
+    }
+
+    /** get daily bonus
+     * @param dailyBonusDay
+     * @return
+     */
+    private static String getDailyBonus(Long dailyBonusDay) {
+        if (dailyBonusDay.equals(1L) || dailyBonusDay.equals(0L)) {
+            return Settings.DailyBonus.day1;
+        } else if (dailyBonusDay.equals(2L)) {
+            return Settings.DailyBonus.day2;
+        } else if (dailyBonusDay.equals(3L)) {
+            return Settings.DailyBonus.day3;
+        } else if (dailyBonusDay.equals(4L)) {
+            return Settings.DailyBonus.day4;
+        } else if (dailyBonusDay.equals(5L)) {
+            return Settings.DailyBonus.day5;
+        }
+        return "";
+    }
+
+    /** give daily bonus
+     * @param uid
+     */
+    public static void giveDailyBonus(String uid) {
+        Document user = getUserByUID(uid);
+        user.put("isDailyBonusGive", true);
+        user.put("lastGiveBailyBonusTime", System.currentTimeMillis());
+        Long dailyBonusDay = user.getLong("dailyBonusDay");
+        if (dailyBonusDay.equals(1L)) {
+            incrementCoins(uid, 10);
+        } else if (dailyBonusDay.equals(2L)) {
+            incrementCoins(uid, 20);
+        } else if (dailyBonusDay.equals(3L)) {
+            addBonus(user.getString("dailyBonus"), uid);
+        } else if (dailyBonusDay.equals(4L)) {
+            Document busterSpoon = MarketModel.getBusterDoc("BusterSpoon", 1, 10);
+            addBuster(uid, busterSpoon);
+        } else if (dailyBonusDay.equals(5L)) {
+            addForeverLifeTime(uid, 1L);
+        }
+    }
+
+    public static UpdateResult addForeverLifeTime(String uid, Long hours) {
+        long oneHours = TimeUnit.HOURS.toMillis(1);
+        long foreverLifeTime = System.currentTimeMillis() + oneHours;
+        UpdateResult updateResult = collection.updateOne(eq("uid", uid), new BasicDBObject("$set", new BasicDBObject("foreverLifeTime", foreverLifeTime))); // TODO the case is not full
+        return updateResult;
+    }
+
+    /**
+     * @param bonusName
+     * @param uid
+     * @return
+     */
+    private static UpdateResult addBonus(String bonusName, String uid) {
+        return collection.updateOne(eq("uid", uid), new BasicDBObject("$push", bonusName) );
+    }
+
+    public static void CheckForeverLifeTimeStatus() {
+        // TODO the function need to implement
+    }
 }

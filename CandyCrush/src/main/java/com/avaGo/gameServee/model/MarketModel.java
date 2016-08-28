@@ -25,7 +25,7 @@ public class MarketModel {
     private static final MongoDatabase myGame = MongoConnector.getMongoDatabase(mongoClient, MongoConnector.DATA_BASE_NAME);
     private static final MongoCollection<Document> collection = MongoConnector.getCollection(myGame, COLLECTION_NAME);
 
-    private static Document getBusterDoc(String name, Integer availableLevel, Integer coin) {
+    public static Document getBusterDoc(String name, Integer availableLevel, Integer coin) {
         Document buster = new Document();
         buster.put("name", name);
         buster.put("availableLevel", availableLevel);

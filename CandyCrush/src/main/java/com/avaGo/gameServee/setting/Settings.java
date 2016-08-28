@@ -22,4 +22,12 @@ public class Settings {
     public static final String IMAGES_DIR = "FB/images";
     public static String HOST;
 
+    public static class DailyBonus {
+        public static String day1 = "10Coin";
+        public static String day2 = "20Coin";
+        public static String day3 = "1spoon";
+        public static String day4 = "buster"; // ?????
+        public static String day5 = "foreverLife1Hour";
+    }
+
 }

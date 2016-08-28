@@ -50,9 +50,12 @@ public class Login extends HttpServlet {
             }
             if(!UtilsMongo.isUserExists(uid, collection)) {
                 UserModel.createUser(uid);
+                UserModel.addDailyBonus(uid);
             } else {
                 UserModel.updateForeverLifeTime(uid);
                 UserModel.updateLastVisitDate(uid);
+                UserModel.addDailyBonus(uid);
+                UserModel.CheckForeverLifeTimeStatus();
             }
             sendUserInfo(uid);
         } catch (JSONException e) {
