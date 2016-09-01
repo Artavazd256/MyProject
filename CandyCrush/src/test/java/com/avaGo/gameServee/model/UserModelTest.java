@@ -7,6 +7,7 @@ import org.bson.types.BasicBSONList;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -15,6 +16,12 @@ import static org.junit.Assert.*;
  */
 public class UserModelTest {
     private static final String uid = "8888";
+
+    @Test
+    public void addDailyBonus() throws Exception {
+        System.out.println(TimeUnit.HOURS.toMillis(1));
+    }
+
 
     @Test
     public void getTopLevel() throws Exception {

@@ -140,8 +140,12 @@ public class Payment extends HttpServlet {
         String productURL = paymentSessionJSONData.getJSONArray("items").getJSONObject(0).getString("product");
         String uid = paymentSessionJSONData.getJSONObject("user").getString("id");
         String url = String.format(Settings.URL, request.getScheme() ,request.getServerName(), request.getServerPort(), "" );
-        if ((url + "/10_step.jsp").equalsIgnoreCase(productURL)) {
+        if (productURL.indexOf("10_step.jsp") != -1 ) {
             add10Step(doc, uid);
+        } else if (productURL.indexOf("sale.jsp") != -1) {
+            if(UserModel.checkHaveUserSale(uid)) {
+                addCoins(doc, uid);
+            }
         } else if (productURL.indexOf("50_coins.jsp") != -1) {
             addCoins(doc, uid);
         } else if (productURL.indexOf("270_coins.jsp") != -1) {

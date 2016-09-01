@@ -38,8 +38,15 @@ public class ProductModel {
         product.add(new Document("coins", 50));
         coins50.put("products", product);
         docs.add(coins50);
-        // 270 coins
+        // 7777 coins
         product = new BasicDBList();
+        Document coins7777 = new Document();
+        coins7777.put("amount", "9.99");
+        coins7777.put("url", String.format("%s/FB/sale.jsp", url));
+        product.add(new Document("coins", 7777));
+        coins7777.put("products", product);
+        docs.add(coins7777);
+        // 270 coins
         Document coins270 = new Document();
         coins270.put("amount", "4.99");
         coins270.put("url", String.format("%s/FB/270_coins.jsp", url));

@@ -78,6 +78,7 @@ public class UserModel {
         user.put("dailyBonus", "");
         user.put("isDailyBonusGive", false);
         user.put("MyBonus", new BasicDBList());
+        user.put("sale", System.currentTimeMillis() + (Settings.TIME_OF_GET_LIFE_FROM_FRIEND*5));
         return user;
     }
 
@@ -366,5 +367,19 @@ public class UserModel {
 
     public static void CheckForeverLifeTimeStatus() {
         // TODO the function need to implement
+    }
+
+    /** Check have user sale
+     * @param uid {@link String}
+     * @return {@link Boolean}
+     */
+    public static boolean checkHaveUserSale(String uid) {
+        Document user = getUserByUID(uid);
+        long saleTime = user.getLong("sale");
+        long currentTime = System.currentTimeMillis();
+        if (currentTime < saleTime)  {
+            return true;
+        }
+        return false;
     }
 }
