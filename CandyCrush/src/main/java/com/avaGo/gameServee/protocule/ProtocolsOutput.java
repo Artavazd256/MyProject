@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class ProtocolsOutput {
 
+
     public static String getUserInfo(Document userInfo) throws JSONException {
         JSONObject all = new JSONObject();
         JSONObject data = new JSONObject(userInfo);
@@ -132,4 +133,17 @@ public class ProtocolsOutput {
         result.put("topLevels", top100);
         return result.toString();
     }
+
+    public static String getNotLife(String uid) throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put("status", "notLife");
+        return result.toString();
+    }
+
+    public static String getStarGameStatus() throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put("status", "ok");
+        return result.toString();
+    }
+
 }

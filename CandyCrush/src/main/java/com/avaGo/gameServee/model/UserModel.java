@@ -58,18 +58,18 @@ public class UserModel {
         BasicDBList friendsEventsUIDS = new BasicDBList();
         Document user = new Document();
         user.put("uid", uid);
-        user.put("xp", 0);
+        user.put("xp", 0L);
         user.put("currentLevelsXP", currentLevelsXP);
-        user.put("level", 0);
+        user.put("level", 0L);
         user.put("createDate", System.currentTimeMillis());
         user.put("lastVisitDate", System.currentTimeMillis());
-        user.put("lifeMax", 5);
-        user.put("life", 5);
-        user.put("lifeTime", 1800);
+        user.put("lifeMax", 5L);
+        user.put("life", 5L);
+        user.put("lifeTime", 1800L);
         user.put("lifeStartTime", System.currentTimeMillis());
-        user.put("foreverLifeTime", 0);
+        user.put("foreverLifeTime", 0L);
         user.put("friendsEventsUIDS", friendsEventsUIDS);
-        user.put("coins", 100);
+        user.put("coins", 100L);
         user.put("volume", 0.5);
         user.put("language", "English");
         user.put("busters", new BasicDBList());
@@ -134,7 +134,7 @@ public class UserModel {
      * @return {@link Boolean}
      */
     public static boolean updateForeverLifeTime(String uid) {
-        UpdateResult updateResult = collection.updateOne(and(eq("uid", uid), lt("foreverLifeTime", System.currentTimeMillis())), new Document("$set", new Document("foreverLifeTime", 0l)));
+        UpdateResult updateResult = collection.updateOne(and(eq("uid", uid), lt("foreverLifeTime", System.currentTimeMillis())), new Document("$set", new Document("foreverLifeTime", 0L)));
         if (updateResult.getMatchedCount() != 0) {
             return true;
         }
@@ -382,8 +382,16 @@ public class UserModel {
         return collection.updateOne(eq("uid", uid), new BasicDBObject("$push", bonusName) );
     }
 
-    public static void CheckForeverLifeTimeStatus() {
-        // TODO the function need to implement
+    public static boolean CheckForeverLifeTimeStatus(String uid) {
+        Document userDoc = collection.find(eq("uid", uid)).first();
+        if (userDoc == null) {
+            return false;
+        }
+        Long foreverLifeTime = userDoc.getLong("foreverLifeTime");
+        if (foreverLifeTime != 0) {
+            return true;
+        }
+        return false;
     }
 
     /** Check have user sale
@@ -398,5 +406,22 @@ public class UserModel {
             return true;
         }
         return false;
+    }
+
+    public static boolean checkUserHaveLife(String uid) {
+        Document userDoc = collection.find(eq("uid", uid)).first();
+        if (userDoc == null) {
+            return false;
+        }
+        long life = userDoc.getLong("life");
+        if (life > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static UpdateResult decLife(String uid) {
+        UpdateResult updateResult = collection.updateOne(eq("uid", uid), new Document("$inc", new Document("life", -1)));
+        return updateResult;
     }
 }

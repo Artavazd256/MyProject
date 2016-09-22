@@ -21,6 +21,7 @@ https://aratta.xyz:8433/game/userInfo?uid=44514541144212
 
 Update user info
 https://aratta.xyz:8433/game/updateUser?userInfo={"uid":"44514541144212", ......
+http://localhost:8080/updateUser?uid=1209511349062889&level=5&xp=50&currentLevel={"level":"4", "xp":"444", "stare":"3"}
 
 Get life from friend
 https://aratta.xyz:8433/game/getLifeFromFriend?uid=44514541144212&uidFrom=4121521554545

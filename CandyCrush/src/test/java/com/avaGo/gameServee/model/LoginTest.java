@@ -1,4 +1,4 @@
-package com.avaGo.gameServee;
+package com.avaGo.gameServee.model;
 
 import org.junit.Test;
 

@@ -55,7 +55,6 @@ public class Login extends HttpServlet {
                 UserModel.updateForeverLifeTime(uid);
                 UserModel.updateLastVisitDate(uid);
                 UserModel.addDailyBonus(uid);
-                UserModel.CheckForeverLifeTimeStatus();
             }
             sendUserInfo(uid);
         } catch (JSONException e) {

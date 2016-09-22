@@ -81,7 +81,7 @@ public class UserModelTest {
         UserModel.createUser(uid);
         UserModel.decrementCoins(uid, 5);
         Document userDoc = UserModel.getUserByUID(uid);
-        Integer coins = userDoc.getInteger("coins");
+        Long coins = userDoc.getLong("coins");
         assertTrue(coins == 95);
         UserModel.deleteUserByUID(uid);
     }

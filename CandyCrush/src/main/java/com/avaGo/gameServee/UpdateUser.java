@@ -63,21 +63,29 @@ public class UpdateUser extends HttpServlet {
     private void main(HttpServletRequest request, HttpServletResponse response) throws JSONException {
         this.request = request;
         this.response = response;
-        String userInfoStr = request.getParameter("userInfo");
-        if (!Utils.isNull(userInfoStr)) {
-            updateDoc(userInfoStr);
+        String uid = request.getParameter("uid");
+        Long xp = Long.valueOf(request.getParameter("xp"));
+        Long level =  Long.valueOf(request.getParameter("level"));
+        Document currentLevel =  Document.parse(request.getParameter("currentLevel"));
+        if (!Utils.isNull(currentLevel)
+            && !Utils.isNull(xp)
+            && !Utils.isNull(level)
+            ) {
+            updateDoc(uid, level, xp, currentLevel);
         } else {
             Utils.sendMessage(response, ProtocolsOutput.errorCode(Settings.PROTOCOL_ERROR, "The protocol is incorrect"));
         }
     }
 
-    /**
-     * @param user
+    /** Update user information
+     * @param uid
+     * @param level
+     * @param xp
+     * @param currentLevel
+     * @throws JSONException
      */
-    private void updateDoc(String user) throws JSONException {
-        Document userDoc = Document.parse(user);
-        String uid = userDoc.getString("uid");
-        boolean status = UserModel.updateDoc(user, uid);
+    private void updateDoc(String uid, Long level, Long xp, Document currentLevel) throws JSONException {
+        boolean status = UserModel.updateDocCustom(uid, level, xp, currentLevel);
         if (status) {
             Utils.sendMessage(response, ProtocolsOutput.statusOk("UserUpdate"));
         } else {
