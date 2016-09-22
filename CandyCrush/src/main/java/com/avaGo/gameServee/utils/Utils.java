@@ -202,4 +202,14 @@ public class Utils {
         }
         return true;
     }
+
+    /** Calculate  left time
+     * @param t {@link Long}
+     * @return {@link Long}  seconds
+     */
+    public static long calculateLeftTime(long t) {
+        long leftTime = t - System.currentTimeMillis();
+        leftTime = leftTime < 0 ? 0L : leftTime / 1000;
+        return leftTime;
+    }
 }

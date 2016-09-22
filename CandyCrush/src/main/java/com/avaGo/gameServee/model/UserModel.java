@@ -455,7 +455,7 @@ public class UserModel {
         } else  {
             long l = currentTime - lifeStartTime;
             long count = l / Settings.LIFE_TIME;
-            if (count != 0) {
+            if (count > 0) {
                 count = count > Settings.MAX_LIFE ? Settings.MAX_LIFE : count;
                 collection.updateOne(eq("uid", uid), new Document("$inc", new Document("life", count)));
                 collection.updateOne(eq("uid", uid), new Document("$set", new Document("lifeStartTime", System.currentTimeMillis())));

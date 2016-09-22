@@ -1,5 +1,6 @@
 package com.avaGo.gameServee.protocule;
 
+import com.avaGo.gameServee.utils.Utils;
 import com.mongodb.client.FindIterable;
 import org.bson.Document;
 import org.json.JSONArray;
@@ -15,6 +16,11 @@ public class ProtocolsOutput {
 
 
     public static String getUserInfo(Document userInfo) throws JSONException {
+        long lifeStartTime = userInfo.getLong("lifeStartTime");
+        long leftTimeToAddLife = Utils.calculateLeftTime(lifeStartTime);
+        userInfo.put("leftTimeToAddLife", leftTimeToAddLife);
+        long leftTimeForeverLifeTime = Utils.calculateLeftTime(userInfo.getLong("foreverLifeTime"));
+        userInfo.put("foreverLifeTime", leftTimeForeverLifeTime);
         JSONObject all = new JSONObject();
         JSONObject data = new JSONObject(userInfo);
         all.put("userInfo", data);
