@@ -36,8 +36,8 @@ public class DailyBonus extends HttpServlet {
 
     private void main(String from) {
         String uid = request.getParameter("uid");
-        UserModel.giveDailyBonus(uid);
         try {
+            UserModel.giveDailyBonus(uid);
             Utils.sendMessage(response, ProtocolsOutput.getUserInfo(UserModel.getUserByUID(uid)));
         } catch (JSONException e) {
             if (Settings.IS_DEBUG) {

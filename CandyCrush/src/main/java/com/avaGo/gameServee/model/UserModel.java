@@ -63,9 +63,9 @@ public class UserModel {
         user.put("level", 0L);
         user.put("createDate", System.currentTimeMillis());
         user.put("lastVisitDate", System.currentTimeMillis());
-        user.put("lifeMax", 5L);
-        user.put("life", 5L);
-        user.put("lifeTime", 1800L);
+        user.put("lifeMax", Settings.MAX_LIFE);
+        user.put("life", Settings.MAX_LIFE);
+        user.put("lifeTime", Settings.LIFE_TIME );
         user.put("lifeStartTime", System.currentTimeMillis());
         user.put("foreverLifeTime", 0L);
         user.put("friendsEventsUIDS", friendsEventsUIDS);
@@ -347,7 +347,7 @@ public class UserModel {
     /** give daily bonus
      * @param uid
      */
-    public static void giveDailyBonus(String uid) {
+    public static void giveDailyBonus(String uid) throws JSONException {
         Document user = getUserByUID(uid);
         user.put("isDailyBonusGive", true);
         user.put("lastGiveBailyBonusTime", System.currentTimeMillis());
@@ -363,7 +363,10 @@ public class UserModel {
             addBuster(uid, busterSpoon);
         } else if (dailyBonusDay.equals(5L)) {
             addForeverLifeTime(uid, 1L);
+        } else {
+            return;
         }
+        updateDoc(user, uid);
     }
 
     public static UpdateResult addForeverLifeTime(String uid, Long hours) {
@@ -420,8 +423,60 @@ public class UserModel {
         return false;
     }
 
+    /** Decrement life
+     * @param uid  {@link String}
+     * @return {@link UpdateResult}
+     */
     public static UpdateResult decLife(String uid) {
         UpdateResult updateResult = collection.updateOne(eq("uid", uid), new Document("$inc", new Document("life", -1)));
         return updateResult;
+    }
+
+
+    /** increment life
+     * @param uid  {@link String}
+     * @return {@link UpdateResult}
+     */
+    public static UpdateResult IncLife(String uid) {
+        UpdateResult updateResult = collection.updateOne(eq("uid", uid), new Document("$inc", new Document("life", 1)));
+        return updateResult;
+    }
+
+    public static void updateLife(String uid) {
+        assert (uid != null);
+        Document userDoc = collection.find(eq("uid", uid)).first();
+        if (userDoc == null) {
+            return;
+        }
+        long lifeStartTime = userDoc.getLong("lifeStartTime");
+        long currentTime = System.currentTimeMillis();
+        if (lifeStartTime < currentTime) {
+             collection.updateOne(eq("uid", uid), new Document("$set", new Document("life", Settings.MAX_LIFE)));
+        } else  {
+            long l = currentTime - lifeStartTime;
+            long count = l / Settings.LIFE_TIME;
+            if (count != 0) {
+                count = count > Settings.MAX_LIFE ? Settings.MAX_LIFE : count;
+                collection.updateOne(eq("uid", uid), new Document("$inc", new Document("life", count)));
+                collection.updateOne(eq("uid", uid), new Document("$set", new Document("lifeStartTime", System.currentTimeMillis())));
+            }
+
+        }
+
+    }
+
+    /** increment
+     * @param uid {@link String}
+     */
+    public static void incLifeTime(String uid) {
+        Document userDoc = collection.find(eq("uid", uid)).first();
+        long lifeStartTime = userDoc.getLong("lifeStartTime");
+        long currentTime = System.currentTimeMillis();
+        if (lifeStartTime < currentTime) {
+            long newLifeStartTime = currentTime + Settings.LIFE_TIME;
+            collection.updateOne(eq("uid", uid), new Document("$set", new Document("lifeStartTime", newLifeStartTime)));
+        } else {
+            collection.updateOne(eq("uid", uid), new Document("$inc", new Document("lifeStartTime", Settings.LIFE_TIME)));
+        }
     }
 }

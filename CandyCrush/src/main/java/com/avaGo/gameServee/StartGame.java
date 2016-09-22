@@ -46,8 +46,12 @@ public class StartGame extends HttpServlet {
 
     private void startGame(String uid) throws JSONException {
         UserModel.updateForeverLifeTime(uid);
-        if( UserModel.checkUserHaveLife(uid) || UserModel.CheckForeverLifeTimeStatus(uid)) {
+        if (UserModel.checkUserHaveLife(uid)) {
+            Utils.sendMessage(response, ProtocolsOutput.getUserInfo(UserModel.getUserByUID(uid)));
+        }  else if(UserModel.CheckForeverLifeTimeStatus(uid) ) {
             UserModel.decLife(uid);
+            // increment life time
+            UserModel.incLifeTime(uid);
             Utils.sendMessage(response, ProtocolsOutput.getUserInfo(UserModel.getUserByUID(uid)));
         } else {
             Utils.sendMessage(response, ProtocolsOutput.getNotLife(uid));

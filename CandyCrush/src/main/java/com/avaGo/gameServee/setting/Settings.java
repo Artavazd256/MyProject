@@ -16,7 +16,8 @@ public class Settings {
     public static final int ACTION_NOT_COMPLETED = 8;
     public static final long TIME_OF_GET_LIFE_FROM_FRIEND = 60*60*24*1000; // seconds*mints*hours*milliseconds = 86400000 24 hours with milliseconds
     public static final boolean IS_DEBUG = true;
-    public static final int MAX_LIFE = 5; // Max life count
+    public static final long MAX_LIFE = 5L; // Max life count
+    public static final long LIFE_TIME = 1800L; // Life time
     public static final String URL = "%s://%s:%s/%s";
     public static final String URL_REAL = "%s://%s:%s/";
     public static final String IMAGES_DIR = "FB/images";
