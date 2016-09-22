@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
 import org.bson.Document;
 import org.bson.types.BasicBSONList;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.List;
@@ -130,15 +131,21 @@ public class UserModelTest {
         assertNotNull(doc);
     }
 
+    /**
+     * @throws Exception
+     */
     @Test
     public void updateDoc() throws Exception {
         UserModel.createUser(uid);
+        Document currentLevel = new Document();
+        currentLevel.put("xp", 5);
+        currentLevel.put("stare", 3);
+        currentLevel.put("level", 2);
+        UserModel.updateDocCustom(uid, 10, 30, currentLevel);
         Document userDoc = UserModel.getUserByUID(uid);
-        userDoc.put("xp", "5");
-        UserModel.updateDoc(userDoc.toJson(), uid);
-        userDoc = UserModel.getUserByUID(uid);
         UserModel.deleteUserByUID(uid);
-        assertEquals(userDoc.getString("xp"), "5");
+        assertTrue(userDoc.getLong("xp") == 30L);
+        assertTrue(userDoc.getLong("level") == 10L);
     }
 
     @Test

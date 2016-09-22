@@ -112,6 +112,23 @@ public class UserModel {
         return status.getMatchedCount() != 0 ? true : false;
     }
 
+    /**  update doc bay custom fields
+     * @param uid
+     * @param level
+     * @param xp
+     * @param currentLevel
+     * @return
+     * @throws JSONException
+     */
+    public static boolean updateDocCustom(String uid, long level, long xp, Document currentLevel) throws JSONException {
+        Document userDoc = new Document();
+        userDoc.put("$push", new Document("currentLevelsXP", currentLevel));
+        userDoc.put("$inc", new Document("xp", xp));
+        userDoc.put("$set", new Document("level", level));
+        UpdateResult status = collection.updateOne(eq("uid", uid), userDoc);
+        return status.getMatchedCount() != 0 ? true : false;
+    }
+
     /** Update forever life time
      * @param uid {@link String}
      * @return {@link Boolean}
