@@ -50,6 +50,7 @@ public class UserModel {
     public static Document getUserDocument(String uid) {
         BasicDBList currentLevelsXP = new BasicDBList();
         BasicDBList wantLifeEvents = new BasicDBList();
+        BasicDBList wantLifeEventsFrom = new BasicDBList();
         BasicDBList sendLifeEvents = new BasicDBList();
         BasicDBList receiveLifeEvents = new BasicDBList();
         Document user = new Document();
@@ -65,6 +66,7 @@ public class UserModel {
         user.put("lifeStartTime", System.currentTimeMillis());
         user.put("foreverLifeTime", 0L);
         user.put("wantLifeEvents", wantLifeEvents); // want life events
+        user.put("wantLifeEventsFrom", wantLifeEventsFrom); // want life events
         user.put("sendLifeEvents", sendLifeEvents); // send life event
         user.put("receiveLifeEvents", receiveLifeEvents); // receive life event
         user.put("coins", 100L);
@@ -507,9 +509,33 @@ public class UserModel {
         return !Utils.isNull(first);
     }
 
-    public static void acceptWantLife(String uid, String uidFrom) {
-
+    /** Want Life event to friend
+     * @param toUID
+     * @param fromUID
+     */
+    public static boolean wantLifeEventToFriend(String fromUID, String toUID) {
+        if (isWantLifeEvent(fromUID, toUID)) {
+            long date = System.currentTimeMillis() + Settings.TIME_OF_GET_LIFE_FROM_FRIEND;
+            collection.updateOne(eq("uid", fromUID), new BasicDBObject("$push", new BasicDBObject("wantLifeEvents", new BasicDBObject().append("uid", toUID).append("date", date).append("status", false))));
+            collection.updateOne(eq("uid", toUID), new BasicDBObject("$push", new BasicDBObject("wantLifeEventsFrom", new BasicDBObject().append("uid", fromUID).append("date", date).append("status", false))));
+            return true;
+        }
+        return false;
     }
 
+    /** is add want Life Event
+     * @param fromUID {@link String}
+     * @param toUID {@link String}
+     * @return
+     */
+    public static boolean isWantLifeEvent(String fromUID, String toUID) {
+        long time = System.currentTimeMillis();
+        Document first = collection.find(and(eq("uid", fromUID), eq("wantLifeEvents.uid", toUID))).first();
+        if (Utils.isNull(first)) {
+            return true;
+        }
+        first = collection.find(and(eq("uid", fromUID), eq("wantLifeEvents.uid", toUID), lte("WantLifeEvents.date", time))).first();
+        return !Utils.isNull(first);
+    }
 
 }
