@@ -1,6 +1,5 @@
 package com.avaGo.gameServee.model;
 
-import com.avaGo.gameServee.protocule.ProtocolsOutput;
 import com.avaGo.gameServee.setting.Settings;
 import com.avaGo.gameServee.utils.Utils;
 import com.mongodb.BasicDBList;
@@ -9,21 +8,16 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.json.JSONException;
 
-import javax.xml.crypto.Data;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.concurrent.AbstractExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.mongodb.client.model.Filters.*;
@@ -55,7 +49,9 @@ public class UserModel {
      */
     public static Document getUserDocument(String uid) {
         BasicDBList currentLevelsXP = new BasicDBList();
-        BasicDBList friendsEventsUIDS = new BasicDBList();
+        BasicDBList wantLifeEvents = new BasicDBList();
+        BasicDBList sendLifeEvents = new BasicDBList();
+        BasicDBList receiveLifeEvents = new BasicDBList();
         Document user = new Document();
         user.put("uid", uid);
         user.put("xp", 0L);
@@ -68,7 +64,9 @@ public class UserModel {
         user.put("lifeTime", Settings.LIFE_TIME );
         user.put("lifeStartTime", System.currentTimeMillis());
         user.put("foreverLifeTime", 0L);
-        user.put("friendsEventsUIDS", friendsEventsUIDS);
+        user.put("wantLifeEvents", wantLifeEvents); // want life events
+        user.put("sendLifeEvents", sendLifeEvents); // send life event
+        user.put("receiveLifeEvents", receiveLifeEvents); // receive life event
         user.put("coins", 100L);
         user.put("volume", 0.5);
         user.put("language", "English");
@@ -479,4 +477,39 @@ public class UserModel {
             collection.updateOne(eq("uid", uid), new Document("$inc", new Document("lifeStartTime", Settings.LIFE_TIME)));
         }
     }
+
+    /** sendLife event to friend
+     * @param toUID
+     * @param fromUID
+     */
+    public static boolean sendLifeEventToFriend(String fromUID, String toUID) {
+        if (isSendLifeEvent(fromUID, toUID)) {
+            long date = System.currentTimeMillis() + Settings.TIME_OF_GET_LIFE_FROM_FRIEND;
+            collection.updateOne(eq("uid", fromUID), new BasicDBObject("$push", new BasicDBObject("sendLifeEvents", new BasicDBObject().append("uid", toUID).append("date", date).append("status", false))));
+            collection.updateOne(eq("uid", toUID), new BasicDBObject("$push", new BasicDBObject("receiveLifeEvents", new BasicDBObject().append("uid", fromUID).append("date", date).append("status", false))));
+            return true;
+        }
+        return false;
+    }
+
+    /** is add send Life Event
+     * @param fromUID {@link String}
+     * @param toUID {@link String}
+     * @return
+     */
+    public static boolean isSendLifeEvent(String fromUID, String toUID) {
+        long time = System.currentTimeMillis();
+        Document first = collection.find(and(eq("uid", fromUID), eq("sendLifeEvents.uid", toUID))).first();
+        if (Utils.isNull(first)) {
+            return true;
+        }
+        first = collection.find(and(eq("uid", fromUID), eq("sendLifeEvents.uid", toUID), lte("sendLifeEvents.date", time))).first();
+        return !Utils.isNull(first);
+    }
+
+    public static void acceptWantLife(String uid, String uidFrom) {
+
+    }
+
+
 }

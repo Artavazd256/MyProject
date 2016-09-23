@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
  * Created by artavzd on 8/12/16.
  */
 public class UserModelTest {
+
     private static final String uid = "8888";
 
     @Test
@@ -148,6 +149,9 @@ public class UserModelTest {
         assertTrue(userDoc.getLong("level") == 10L);
     }
 
+    /**
+     * @throws Exception
+     */
     @Test
     public void updateForeverLifeTime() throws Exception {
         UserModel.createUser(uid);
@@ -159,6 +163,9 @@ public class UserModelTest {
         assertTrue(b);
     }
 
+    /**
+     * @throws Exception
+     */
     @Test
     public void updateLastVisitDate() throws Exception {
         UserModel.createUser(uid);
@@ -167,6 +174,9 @@ public class UserModelTest {
         assertTrue(b);
     }
 
+    /**
+     * @throws Exception
+     */
     @Test
     public void addNewLevelInfo() throws Exception {
         UserModel.createUser(uid);
@@ -178,6 +188,9 @@ public class UserModelTest {
         assertEquals(levels.size(), 2);
     }
 
+    /**
+     * @throws Exception
+     */
     @Test
     public void updateLevelInfo() throws Exception {
         UserModel.createUser(uid);
@@ -188,6 +201,25 @@ public class UserModelTest {
         List<Document> levels = (List<Document>) userDoc.get("currentLevelsXP");
         assertTrue(levels.get(0).getLong("xp") == 18 ? true : false);
         UserModel.deleteUserByUID(uid);
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Test
+    public void sendLifeEventToFriend() throws Exception {
+        String uidFriend = "7777";
+        UserModel.createUser(uid);
+        UserModel.createUser(uidFriend);
+        UserModel.sendLifeEventToFriend(uid, uidFriend);
+        Document userDoc1 = UserModel.getUserByUID(uid);
+        Document userDoc2 = UserModel.getUserByUID(uidFriend);
+        UserModel.deleteUserByUID(uidFriend);
+        UserModel.deleteUserByUID(uid);
+        List<BasicDBObject> sendLifeEvents = (List<BasicDBObject>) userDoc1.get("sendLifeEvents");
+        List<BasicDBObject> receiveLifeEvents = (List<BasicDBObject>)userDoc2.get("receiveLifeEvents");
+        assertTrue( sendLifeEvents.size() != 0);
+        assertTrue( receiveLifeEvents.size() != 0);
     }
 
 }
