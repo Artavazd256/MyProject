@@ -538,4 +538,22 @@ public class UserModel {
         return !Utils.isNull(first);
     }
 
+    public static boolean acceptWantLife(String myUID, String toUID) {
+        UpdateResult updateResult = collection.updateOne(and(eq("uid", myUID), eq("wantLifeEventsFrom.uid", toUID)), new BasicDBObject("$set", new BasicDBObject("wantLifeEventsFrom.$.status", true)));
+        UpdateResult updateResult1 = collection.updateOne(and(eq("uid", toUID), eq("wantLifeEvents.uid", myUID), ne("life", Settings.MAX_LIFE)), new BasicDBObject("$set", new BasicDBObject("wantLifeEvents.$.status", true)).append("$inc", new BasicDBObject("life", 1)));
+        if (updateResult.getModifiedCount() != 0 && updateResult1.getModifiedCount() != 0) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public static boolean acceptSendLife(String myUID, String toUID) {
+        UpdateResult updateResult = collection.updateOne(and(eq("uid", myUID), eq("receiveLifeEvents.uid", toUID), ne("life", Settings.MAX_LIFE)), new BasicDBObject("$set", new BasicDBObject("receiveLifeEvents.$.status", true)).append("$inc", new BasicDBObject("life", 1)));
+        UpdateResult updateResult1 = collection.updateOne(and(eq("uid", toUID), eq("sendLifeEvents.uid", myUID)), new BasicDBObject("$set", new BasicDBObject("sendLifeEvents.$.status", true)));
+        if (updateResult.getModifiedCount() != 0 && updateResult1.getModifiedCount() != 0) {
+            return true;
+        }
+        return false;
+    }
 }
